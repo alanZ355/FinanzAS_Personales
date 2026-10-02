@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Finanzas Personales</title>
+  <meta name="description" content="Control financiero personal simple, ligero y 100% local." />
+  <meta name="theme-color" content="#0f172a" />
+  <link rel="manifest" href="./manifest.webmanifest" />
+  <link rel="icon" type="image/svg+xml" href="./icon.svg" />
+  <link rel="apple-touch-icon" href="./icon-192.png" />
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+  <header class="app-header">
+    <h1>💰 Finanzas Personales</h1>
+    <p class="subtitle">100% local · sin cuentas · sin internet</p>
+  </header>
+
+  <main class="container">
+    <!-- Resumen -->
+    <section class="card balance-card" aria-live="polite">
+      <h2>Saldo total</h2>
+      <p id="saldoTotal" class="balance">$0.00</p>
+      <div class="totals">
+        <div class="total ing"><span>🟢 Ingresos</span><strong id="totalIngresos">$0.00</strong></div>
+        <div class="total gas"><span>🔴 Gastos</span><strong id="totalGastos">$0.00</strong></div>
+      </div>
+      <div class="chart-wrap">
+        <canvas id="chart" width="280" height="280" role="img" aria-label="Gráfico de ingresos vs gastos"></canvas>
+        <p id="chartEmpty" class="chart-empty">Sin datos todavía</p>
+      </div>
+    </section>
+
+    <!-- Formulario -->
+    <section class="card">
+      <h2 id="formTitle">Nuevo movimiento</h2>
+      <form id="form" novalidate>
+        <div class="field">
+          <label for="tipo">Tipo *</label>
+          <select id="tipo" required>
+            <option value="">— Seleccionar —</option>
+            <option value="ingreso">Ingreso 🟢</option>
+            <option value="gasto">Gasto 🔴</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="monto">Monto * (mayor a $0.00)</label>
+          <input id="monto" type="number" min="0.01" step="0.01" inputmode="decimal" placeholder="Ej: 1500.00" required />
+        </div>
+        <div class="field">
+          <label for="detalle">Detalle / Descripción *</label>
+          <input id="detalle" type="text" maxlength="120" placeholder="Ej: Sueldo, Alquiler…" required />
+        </div>
+        <div class="field">
+          <label for="fecha">Fecha *</label>
+          <input id="fecha" type="date" required />
+        </div>
+        <p id="formError" class="error" role="alert" hidden></p>
+        <div class="row">
+          <button type="submit" id="btnSubmit" class="btn primary">Agregar</button>
+          <button type="button" id="btnCancel" class="btn ghost" hidden>Cancelar</button>
+        </div>
+      </form>
+    </section>
+
+    <!-- Lista -->
+    <section class="card">
+      <h2>Movimientos <span id="count" class="count"></span></h2>
+      <ul id="lista" class="list"></ul>
+      <p id="listEmpty" class="muted">No hay movimientos. Agrega el primero arriba.</p>
+    </section>
+
+    <!-- Backup -->
+    <section class="card">
+      <h2>Resguardo de datos</h2>
+      <p class="muted">Tus datos viven solo en este dispositivo. Exporta copias con frecuencia.</p>
+      <div class="row">
+        <button id="btnExport" class="btn primary">⬇ Exportar JSON</button>
+        <button id="btnImport" class="btn" type="button">⬆ Importar JSON</button>
+        <input id="fileImport" type="file" accept="application/json,.json" hidden tabindex="-1" />
+      </div>
+      <p id="backupMsg" class="muted" role="status"></p>
+      <button id="btnWipe" class="btn danger-link">Borrar todos los datos</button>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <small>PWA offline · datos en localStorage · v1.0</small>
+  </footer>
+
+  <script src="./vendor-chart.umd.min.js"></script>
+  <script src="./app.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js').catch(console.error);
+      });
+    }
+  </script>
+</body>
+</html>
